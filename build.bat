@@ -1,2 +1,2 @@
 @echo off
-pyinstaller --onefile yaml_shortcut.py
+pyinstaller --icon=app.ico --noconsole yaml_shortcut.py
