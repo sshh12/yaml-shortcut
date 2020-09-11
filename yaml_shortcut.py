@@ -73,6 +73,11 @@ def open_url(params):
     webbrowser.open(params)
 
 
+def open_cmd(params):
+    cmd = r"start cmd /k " + " & ".join(params["run"])
+    subprocess.Popen(cmd, shell=True)
+
+
 def open_fluent_terminal(params):
     cmd = r"C:\Windows\System32\cmd.exe /k " + " & ".join(params["run"])
     uri = "ftcmd://fluent.terminal/?cmd={}&conpty=True&buffer=True".format(urllib.parse.quote_plus(cmd))
@@ -80,7 +85,13 @@ def open_fluent_terminal(params):
 
 
 if __name__ == "__main__":
-    open_methods = {"dirs": open_dir, "url": open_url, "vscode": open_vscode, "fluent_terminal": open_fluent_terminal}
+    open_methods = {
+        "dirs": open_dir,
+        "url": open_url,
+        "vscode": open_vscode,
+        "cmd": open_cmd,
+        "fluent_terminal": open_fluent_terminal,
+    }
     try:
         main(sys.argv[1], open_methods)
     except Exception as e:
