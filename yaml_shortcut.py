@@ -25,12 +25,20 @@ def main(config_fn, methods):
                 item = params["name"]
             else:
                 item = method + " " + str(params)
-            layout.append([sg.Text(item), sg.Button("Open", key=item)])
+            layout.append([sg.Button("Open", key=item), sg.Text(item)])
 
             def _open(method=method, params=params):
                 methods[method](params)
 
             handlers[item] = _open
+    layout.append([sg.Button("Open All", key="open-all")])
+
+    def _open_all():
+        for method, values in cfg.items():
+            for params in values:
+                methods[method](params)
+
+    handlers["open-all"] = _open_all
     window = sg.Window(name, layout)
     while True:
         event, values = window.read()
@@ -42,12 +50,27 @@ def main(config_fn, methods):
     window.close()
 
 
+def show_error_gui(reason):
+    sg.theme("Material2")
+    layout = [[sg.Text(reason)]]
+    window = sg.Window("Yaml Shortcut", layout)
+    while True:
+        event, _ = window.read()
+        if event == sg.WIN_CLOSED or event == "Cancel":
+            break
+    window.close()
+
+
 def open_dir(params):
     subprocess.run(["explorer.exe", params])
 
 
 def open_vscode(params):
     webbrowser.open("vscode://file/" + params)
+
+
+def open_url(params):
+    webbrowser.open(params)
 
 
 def open_fluent_terminal(params):
@@ -57,5 +80,8 @@ def open_fluent_terminal(params):
 
 
 if __name__ == "__main__":
-    open_methods = {"dirs": open_dir, "vscode": open_vscode, "fluent_terminal": open_fluent_terminal}
-    main(sys.argv[1], open_methods)
+    open_methods = {"dirs": open_dir, "url": open_url, "vscode": open_vscode, "fluent_terminal": open_fluent_terminal}
+    try:
+        main(sys.argv[1], open_methods)
+    except Exception as e:
+        show_error_gui(repr(e))
