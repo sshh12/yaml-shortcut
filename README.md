@@ -35,3 +35,31 @@ meta:
 
 2. Download and unzip the latest release [yaml_shortcut.zip](https://github.com/sshh12/yaml-shortcut/releases/download/0.0.1/yaml_shortcut.zip)
 3. Double-click the shortcut and choose to open with `yaml_shortcut.exe`
+
+## Adding to Windows Menu
+
+Create `~/.yaml_shortcut.yaml`:
+
+```
+dirs:
+  - "%CWD%"
+vscode:
+  - "%CWD%"
+fluent_terminal:
+  - name: Dev Terminal
+    run:
+      - cd "%CWD%"
+meta:
+  name: "%CWD%"
+```
+
+Open the Windows Registry Editor and add these entries (change `...` to install path):
+
+```
+[HKEY_CLASSES_ROOT\Directory\Background\shell\yamlshortcut]
+@="Open Dev Here"
+"Icon"="...\\yaml_shortcut.exe"
+
+[HKEY_CLASSES_ROOT\Directory\Background\shell\yamlshortcut\command]
+@="...\\yaml_shortcut.exe \"%V\""
+```

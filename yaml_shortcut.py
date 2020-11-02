@@ -7,11 +7,38 @@ import PySimpleGUI as sg
 import subprocess
 import webbrowser
 import yaml
+import os
 
 
 def main(config_fn, methods):
-    with open(config_fn, "r") as cf:
-        cfg = yaml.safe_load(cf)
+    if os.path.isdir(config_fn):
+        user_dir = os.path.expanduser("~")
+        with open(os.path.join(user_dir, ".yaml_shortcut.yaml"), "r") as cf:
+            cfg = yaml.safe_load(cf)
+        # TODO much cleaner recursive version
+        for _, val in cfg.items():
+            if isinstance(val, list):
+                for i, item in enumerate(val):
+                    if isinstance(item, str):
+                        val[i] = item.replace("%CWD%", config_fn)
+                    else:
+                        for key2, val2 in item.items():
+                            if isinstance(val2, list):
+                                for j, item2 in enumerate(val2):
+                                    val2[j] = item2.replace("%CWD%", config_fn)
+                            else:
+                                item[key2] = val2.replace("%CWD%", config_fn)
+            elif isinstance(val, dict):
+                for key2, val2 in val.items():
+                    val[key2] = val2.replace("%CWD%", config_fn)
+        show_cfg(cfg, methods)
+    else:
+        with open(config_fn, "r") as cf:
+            cfg = yaml.safe_load(cf)
+        show_cfg(cfg, methods)
+
+
+def show_cfg(cfg, methods):
     cfg.setdefault("meta", {})
     meta = cfg["meta"]
     name = meta.get("name", "Yaml Shortcut")
@@ -95,4 +122,4 @@ if __name__ == "__main__":
     try:
         main(sys.argv[1], open_methods)
     except Exception as e:
-        show_error_gui(repr(e))
+        show_error_gui(str(sys.argv) + repr(e))
