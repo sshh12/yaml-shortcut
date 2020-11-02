@@ -33,7 +33,7 @@ meta:
   name: 'Yaml Shortcut'
 ```
 
-2. Download and unzip the latest release [yaml_shortcut.zip](https://github.com/sshh12/yaml-shortcut/releases/download/0.0.1/yaml_shortcut.zip)
+2. Download and unzip the latest release [yaml_shortcut.zip](https://github.com/sshh12/yaml-shortcut/releases)
 3. Double-click the shortcut and choose to open with `yaml_shortcut.exe`
 
 ## Adding to Windows Menu
